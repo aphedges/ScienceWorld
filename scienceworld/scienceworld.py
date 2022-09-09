@@ -405,6 +405,7 @@ class ScienceWorldEnv:
         and 'simplificationStr'.
         '''
         observation = self.server.step(input_str)
+        success = self.server.getSuccess()
         score = int(round(100 * self.server.getScore()))        # Convert from 0-1 to 0-100
         isCompleted = self.server.getCompleted()
         numMoves = self.get_num_moves()
@@ -427,6 +428,7 @@ class ScienceWorldEnv:
             'moves': numMoves,
             'score': score,
             'reward': reward,
+            'isValidAction': success,
             'look': self.look(),
             'inv': self.inventory(),
             'taskDesc': self.taskdescription(),
