@@ -186,6 +186,10 @@ class ScienceWorldEnv:
         ''' Get all possible actions in the current environment state. '''
         return list(self.server.getPossibleActions())
 
+    # Get all possible actions (including alternative wordings)
+    def getAllPossibleActions(self):
+        return list(self.server.getAllPossibleActions())
+
     # Get possible actions (and also include the template IDs for those actions)
     def get_possible_actions_with_IDs(self) -> List[Dict[str, Any]]:
         ''' Get a list of dictionaries that map "action_example" to the action template and "template_id" to the id.'''
