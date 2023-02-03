@@ -20,6 +20,10 @@ VERSION = re.search(r'\bSpecification-Version: (.*)\b', contents).group(1)
 # Based on https://github.com/microsoft/DeepSpeed/blob/28dfca8a13313b570e1ad145cf14476d8d5d8e16/setup.py#L170-L184
 git_hash_cmd = ('git', 'rev-parse', '--short', 'HEAD')
 try:
+    import os
+    # During build, set with `export SOURCE_DATE_EPOCH=$(git log -n 1 --format=%at HEAD)`
+    if 'SOURCE_DATE_EPOCH' in os.environ:
+        raise subprocess.CalledProcessError(1,2)
     git_hash = subprocess.check_output(git_hash_cmd, stderr=subprocess.DEVNULL, encoding='utf-8').strip()
     VERSION += f'+{git_hash}'
 except subprocess.CalledProcessError:
