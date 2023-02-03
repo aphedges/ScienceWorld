@@ -3,15 +3,17 @@ import re
 import os.path
 import subprocess
 import zipfile
+from pathlib import Path
 
 from setuptools import setup
 
 
-BASEPATH = os.path.dirname(os.path.abspath(__file__))
-JAR_FILE = 'scienceworld.jar'
-JAR_PATH = os.path.join(BASEPATH, 'scienceworld', JAR_FILE)
+BASEPATH = Path(__file__).resolve().parent
+
 # Extract ScienceWorld version from JAR file metadata
-contents = zipfile.ZipFile(JAR_PATH).open('META-INF/MANIFEST.MF').read().decode('utf-8')
+JAR_PATH = BASEPATH / 'scienceworld' / 'scienceworld.jar'
+with zipfile.ZipFile(JAR_PATH) as file:
+    contents = file.open('META-INF/MANIFEST.MF').read().decode('utf-8')
 VERSION = re.search(r'\bSpecification-Version: (.*)\b', contents).group(1)
 
 # Based on https://github.com/microsoft/DeepSpeed/blob/28dfca8a13313b570e1ad145cf14476d8d5d8e16/setup.py#L170-L184
@@ -24,7 +26,8 @@ try:
 except subprocess.CalledProcessError:
     pass
 
-with open(os.path.join('scienceworld', 'version.py'), 'w') as f:
+# Dynamically create version file
+with open(BASEPATH / 'scienceworld' / 'version.py', 'w') as f:
     f.write(f'__version__ = {VERSION!r}\n')
 
 setup(version=VERSION)
