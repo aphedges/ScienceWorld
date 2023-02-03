@@ -16,12 +16,11 @@ with zipfile.ZipFile(JAR_PATH) as file:
     contents = file.open('META-INF/MANIFEST.MF').read().decode('utf-8')
 VERSION = re.search(r'\bSpecification-Version: (.*)\b', contents).group(1)
 
+# Add Git hash to version if possible
 # Based on https://github.com/microsoft/DeepSpeed/blob/28dfca8a13313b570e1ad145cf14476d8d5d8e16/setup.py#L170-L184
-# Write out version/git info
-git_hash_cmd = "git rev-parse --short HEAD"
+git_hash_cmd = ('git', 'rev-parse', '--short', 'HEAD')
 try:
-    result = subprocess.check_output(git_hash_cmd, shell=True)
-    git_hash = result.decode('utf-8').strip()
+    git_hash = subprocess.check_output(git_hash_cmd, stderr=subprocess.DEVNULL, encoding='utf-8').strip()
     VERSION += f'+{git_hash}'
 except subprocess.CalledProcessError:
     pass
